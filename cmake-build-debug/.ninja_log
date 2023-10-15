@@ -1,0 +1,13 @@
+# ninja log v5
+1	2330	7190918950310100	CMakeFiles/calculator.dir/main.cpp.obj	e80a6aed8bfccdf8
+2	249	7190919434734208	build.ninja	8ed5ed72d3acf8c1
+0	1546	7190918445101666	CMakeFiles/calculator.dir/calculator.cpp.obj	d2eb6ceb4c160a3f
+1	99	7187502735778712	CMakeFiles/calculator.dir/math.cpp.obj	5a7b430f224a23ea
+1	98	7187503660780997	CMakeFiles/mymath.dir/mymath.cpp.obj	38476f7c344912c7
+0	185	7187502457539737	CMakeFiles/SHARED.dir/math.cpp.obj	b9fd442bde5108ee
+1	488	7187503402039488	CMakeFiles/calculator.dir/mymath.cpp.obj	ce85c6445a0504c6
+489	629	7187503403428956	calculator.lib	29883149fb68d3c5
+2331	2675	7190918953202129	calculator.exe	20e7a238733f4dd0
+2	778	7187508329509702	CMakeFiles/cos.dir/math.cpp.obj	beb632eb5eb0ea79
+1	887	7187508329509702	cos.lib	3ce8b07570370391
+1	887	7187508329509702	cos.dll	3ce8b07570370391
