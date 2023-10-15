@@ -25,8 +25,11 @@ public:
     double solve (const std::string& task);
 private:
     std::unordered_map<char, Operator *> standardOperators;
+    std::unordered_map<std::string, Operator *> additionalOperators;
+    const std::string pathToAdditionalOperators = "..\\plugins\\";
 
     Calculator () {
+        loadAdditionalOperators (pathToAdditionalOperators);
         standardOperators = {
             std::pair<char, Operator *>
                     {'+', (Operator *) new BinaryOperator (
@@ -50,5 +53,6 @@ private:
     std::vector<std::string> splitExpression (const std::string& expression);
     std::queue<std::string> toInfixNotation (const std::vector<std::string>& splitExpression);
     double calculateInfixNotation (std::queue<std::string>& expression);
+    void loadAdditionalOperators (const std::string& path);
 };
 #endif //CALCULATOR_CALCULATOR_H

@@ -1,5 +1,8 @@
 #include "calculator.h"
 #include <stack>
+#include <Windows.h>
+#include <stdexcept>
+#include <sstream>
 
 double Calculator::solve(const std::string &task) {
     std::vector<std::string> splitTask = splitExpression(task);
@@ -83,14 +86,70 @@ double Calculator::calculateInfixNotation(std::queue<std::string>& expression) {
     while (!expression.empty()) {
         if (isdigit(expression.front().front())) {
             numsStack.push(stod(expression.front()));
-        } else {
+        } else if (standardOperators.contains(expression.front().front())) {
             double right = numsStack.top();
             numsStack.pop();
             double left = numsStack.top();
             numsStack.pop();
             numsStack.push(standardOperators.at(expression.front().front())->calculate({left, right}));
+        } else if (additionalOperators.contains(expression.front())) {
+            if (additionalOperators.at(expression.front())->getArgsNum() == 1) {
+                double arg = numsStack.top();
+                numsStack.pop();
+                numsStack.push(additionalOperators.at(expression.front())->calculate({arg}));
+            } else if (additionalOperators.at(expression.front())->getArgsNum() == 2) {
+                double right = numsStack.top();
+                numsStack.pop();
+                double left = numsStack.top();
+                numsStack.pop();
+                numsStack.push(additionalOperators.at(expression.front())->calculate({left, right}));
+            }
+        } else {
+            //ex
         }
         expression.pop();
     }
     return numsStack.top();
+}
+
+void Calculator::loadAdditionalOperators(const std::string &path) {
+    WIN32_FIND_DATAA wfd;
+    HANDLE dllFile = FindFirstFileA((path + std::string("*.dll")).c_str(), &wfd);
+    if (dllFile != INVALID_HANDLE_VALUE) {
+        do {
+            std::string dllName(wfd.cFileName);
+            HMODULE libraryFile = LoadLibraryA((path + dllName).c_str());
+
+            std::string definition((char *) (GetProcAddress(libraryFile, "funcDefinition")));
+            std::string function((char *) (GetProcAddress(libraryFile, "funcName")));
+            int* argsNum = (int*) (GetProcAddress(libraryFile, "arity"));
+
+            if(*argsNum == 1)
+            {
+                std::function<double(double)> importFunc =
+                        (double(*)(double))(GetProcAddress(libraryFile, function.c_str()));
+                if (importFunc == nullptr) {
+                    std::ostringstream error_message;
+                    error_message << "No function " << function.c_str() << "in " << libraryFile;
+                    throw std::runtime_error(error_message.str());
+                }
+                additionalOperators.insert({definition, (Operator *) new UnaryOperator (
+                                                          importFunc,Operator::Priority::HIGH)});
+            } else if(*argsNum == 2) {
+                std::function<double(double, double)> importFunc =
+                        (double(*)(double, double))(GetProcAddress(libraryFile, function.c_str()));
+                if (importFunc == nullptr) {
+                    std::ostringstream error_message;
+                    error_message << "No function " << function.c_str() << "in " << libraryFile;
+                    throw std::runtime_error(error_message.str());
+                }
+                additionalOperators.insert({definition, (Operator *) new BinaryOperator (
+                        importFunc,Operator::Priority::HIGH)});
+            }
+        } while (NULL != FindNextFileA(dllFile, &wfd));
+        FindClose(dllFile);
+    }
+    else {
+        throw std::runtime_error("Files not found");
+    }
 }

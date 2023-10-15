@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main() {
-    auto a = Calculator::getInstance().solve("2 + 3 * (1 - (3 * (4 + 2))) - 4 / 5");
+    auto a = Calculator::getInstance().solve("cos(3.14)");
     std::cout << a;
     return 0;
 }
