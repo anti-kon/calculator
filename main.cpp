@@ -3,8 +3,13 @@
 #include <iostream>
 
 int main() {
-    auto a = Calculator::getInstance().solve("cos(3.14)");
-    std::cout << a;
-    return 0;
+    std::string input;
+
+    while (true) {
+        std::getline(std::cin, input);
+        std::cout << Calculator::getInstance().solve(input) << std::endl;
+        input.clear();
+    }
+
 }
 

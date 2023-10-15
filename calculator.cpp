@@ -55,7 +55,7 @@ std::queue<std::string> Calculator::toInfixNotation(const std::vector<std::strin
                 outputQueue.push(operatorsStack.top());
                 operatorsStack.pop();
                 if (operatorsStack.empty()){
-                    //exp
+                    throw std::runtime_error("Non correct input");
                 }
             }
             operatorsStack.pop();
@@ -72,7 +72,7 @@ std::queue<std::string> Calculator::toInfixNotation(const std::vector<std::strin
     }
     while (!operatorsStack.empty()) {
         if (operatorsStack.top().front() == '(') {
-            //exp
+            throw std::runtime_error("Non correct input");
         } else
             outputQueue.push(operatorsStack.top());
         operatorsStack.pop();
@@ -105,7 +105,9 @@ double Calculator::calculateInfixNotation(std::queue<std::string>& expression) {
                 numsStack.push(additionalOperators.at(expression.front())->calculate({left, right}));
             }
         } else {
-            //ex
+            std::ostringstream error_message;
+            error_message << "Operator " << expression.front() << " non found";
+            throw std::runtime_error(error_message.str());
         }
         expression.pop();
     }
